@@ -1,0 +1,22 @@
+version: "3"
+services:
+
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+        db:
+            condition: service_started
+
+  db:
+    image: mysql
+    ports:
+      - "32000:3306"
+    command: --init-file /db/init.sql
+    volumes:
+        - ./db/init.sql:/db/init.sql
+    environment:
+        MYSQL_ROOT_USER: root
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: clientmanager

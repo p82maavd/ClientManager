@@ -1,0 +1,411 @@
+{% extends 'layout.html' %}
+
+{% block body%}
+
+<div id="liveToast" class="toast" style="z-index: 100000; position: absolute; top: 3%; left: 3%;" role="alert"
+    aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <strong class="me-auto">Client Manager</strong>
+        <small class="text-muted">Just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages%}
+
+        <p id="message">{{message}}</p>
+
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+</div>
+
+<form class="d-flex mt-3 " role="search" style="width:40%; margin-left: 30%; margin-right: 30%;">
+
+    <input class="form-control rounded-0 rounded-start border-2 border-end-0 border-secondary" type="search"
+        placeholder="Search" aria-label="Search">
+    <select name="search_param" id="search_param"
+        class="btn btn-default dropdown-toggle border rounded-0 rounded-end  border-secondary" data-toggle="dropdown">
+        <option value="all">All</option>
+        <option value="username">Name</option>
+        <option value="email">Direction</option>
+        <option value="studentcode">Phone Number</option>
+    </select>
+
+</form>
+
+<div class="container mt-3" style="height: 800px;">
+    <div class=" d-inline-block  border-top border-bottom rounded-start border-2 border-secondary border-start "
+        style="width: 35%; height: 80%;">
+
+        <!-- Add Client -->
+        <div class="border-bottom border-2 border-secondary">
+            <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                style="margin-left: 25%; margin-right: 25%; margin-top:10px; margin-bottom:10px;">
+                Add Client
+            </button>
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Add a new client</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/addClients" method="POST">
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput" class="form-label">Name</label>
+                                    <input type="text" name="nombre" class="form-control" id="formGroupExampleInput"
+                                        placeholder="Example input placeholder">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput2" class="form-label">Direction</label>
+                                    <input type="text" name="direccion" class="form-control" id="formGroupExampleInput2"
+                                        placeholder="Another input placeholder">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput3" class="form-label">Phone Number</label>
+                                    <input type="text" name="telefono" class="form-control" id="formGroupExampleInput3"
+                                        placeholder="Another input placeholder">
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+
+
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="list-group overflow-auto scrollbar" style="height: 90.5%;">
+
+
+
+            {% for client in clients%}
+            <a href="/getClient/{{client.0}}"
+                class="list-group-item list-group-item-action flex-column align-items-start rounded-0">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{client.1}}</h5>
+
+                </div>
+                <p class="mb-1">{{client.2}}</p>
+                <small>{{client.3}}</small>
+            </a>
+
+            {% endfor %}
+        </div>
+    </div>
+
+    <div name="rightcolumn" class="d-inline-table border border-secondary rounded-end  border-2 "
+        style="height: 80%; width: 65%; float: right;">
+        {% if clientSearched %}
+
+        <div name="aboutyou" class="d-flex" style="height: 40%;">
+
+            <div name="personalinfo" class="d-inline-block m-5" style="width: 60%; height: 95%;">
+                <form id="updateForm" action="/updateClients/{{clientSearched.0}}" method="POST">
+                    <div class="mb-4">
+                        <label class="me-1" style="width: 30%;">Name</label>
+                        <input type="text" name="nameForm" readonly class="border-0" id="clientName"
+                            value="{{ clientSearched.1 }}">
+                    </div>
+                    <div class="mb-4 ">
+                        <label class="me-1" style="width: 30%;">Direction</label>
+                        <input type="text" name="directionForm" readonly class="border-0" id="clientDirection"
+                            value="{{ clientSearched.2 }}">
+                    </div>
+                    <div class="mb-4 ">
+                        <label class="me-1" style="width: 30%;">Phone Number</label>
+                        <input type="text" name="phonenumberForm" readonly class="border-0" id="clientPhonenumber"
+                            value="{{ clientSearched.3 }}">
+                    </div>
+                </form>
+            </div>
+
+            <div name="actionsmap" class="d-inline-block m-3" style="width: 30%; height: 95%;">
+                <form action="/deleteClients/{{clientSearched.0}}" method="POST">
+                    <button type="submit" class="btn btn-danger float-end" name="deleteButton" id="deleteButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="26" fill="currentColor"
+                            class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path
+                                d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z">
+                            </path>
+                        </svg>
+                    </button>
+                </form>
+                <button type="button" name="editButton" class="btn btn-primary me-1 float-end" id="editButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="26" fill="currentColor"
+                        class="bi bi-pencil" viewBox="0 0 16 16">
+                        <path
+                            d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z">
+                        </path>
+                    </svg>
+                </button>
+
+                <form action="/getClient/{{clientSearched.0}}" method="GET">
+                    <button type="submit" class="btn btn-danger float-end d-none" name="cancelEdit" id="cancelEdit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="26" fill="currentColor"
+                            class="bi bi-x-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                            <path
+                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z">
+                            </path>
+                        </svg>
+                    </button>
+                </form>
+
+
+                <button type="button" class="btn btn-success float-end d-none me-1" name="validEdit" id="validEdit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="26" fill="currentColor"
+                        class="bi bi-check-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                        <path
+                            d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z">
+                        </path>
+                    </svg>
+                </button>
+
+
+            </div>
+
+        </div>
+
+        <h5 class="m-3">Bills</h5>
+
+        <div name="bills" class="overflow-auto scrollbar m-3" style="height: 48%;">
+            <div class="table-responsive ">
+                <table class="table table-striped table-sm ">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Header</th>
+                            <th scope="col">Header</th>
+                            <th scope="col">Header</th>
+                            <th scope="col">Header</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1,001</td>
+                            <td>random</td>
+                            <td>data</td>
+                            <td>placeholder</td>
+                            <td>text</td>
+                        </tr>
+                        <tr>
+                            <td>1,002</td>
+                            <td>placeholder</td>
+                            <td>irrelevant</td>
+                            <td>visual</td>
+                            <td>layout</td>
+                        </tr>
+                        <tr>
+                            <td>1,003</td>
+                            <td>data</td>
+                            <td>rich</td>
+                            <td>dashboard</td>
+                            <td>tabular</td>
+                        </tr>
+                        <tr>
+                            <td>1,003</td>
+                            <td>information</td>
+                            <td>placeholder</td>
+                            <td>illustrative</td>
+                            <td>data</td>
+                        </tr>
+                        <tr>
+                            <td>1,004</td>
+                            <td>text</td>
+                            <td>random</td>
+                            <td>layout</td>
+                            <td>dashboard</td>
+                        </tr>
+                        <tr>
+                            <td>1,005</td>
+                            <td>dashboard</td>
+                            <td>irrelevant</td>
+                            <td>text</td>
+                            <td>placeholder</td>
+                        </tr>
+                        <tr>
+                            <td>1,006</td>
+                            <td>dashboard</td>
+                            <td>illustrative</td>
+                            <td>rich</td>
+                            <td>data</td>
+                        </tr>
+                        <tr>
+                            <td>1,007</td>
+                            <td>placeholder</td>
+                            <td>tabular</td>
+                            <td>information</td>
+                            <td>irrelevant</td>
+                        </tr>
+                        <tr>
+                            <td>1,008</td>
+                            <td>random</td>
+                            <td>data</td>
+                            <td>placeholder</td>
+                            <td>text</td>
+                        </tr>
+                        <tr>
+                            <td>1,009</td>
+                            <td>placeholder</td>
+                            <td>irrelevant</td>
+                            <td>visual</td>
+                            <td>layout</td>
+                        </tr>
+                        <tr>
+                            <td>1,010</td>
+                            <td>data</td>
+                            <td>rich</td>
+                            <td>dashboard</td>
+                            <td>tabular</td>
+                        </tr>
+                        <tr>
+                            <td>1,011</td>
+                            <td>information</td>
+                            <td>placeholder</td>
+                            <td>illustrative</td>
+                            <td>data</td>
+                        </tr>
+                        <tr>
+                            <td>1,012</td>
+                            <td>text</td>
+                            <td>placeholder</td>
+                            <td>layout</td>
+                            <td>dashboard</td>
+                        </tr>
+                        <tr>
+                            <td>1,013</td>
+                            <td>dashboard</td>
+                            <td>irrelevant</td>
+                            <td>text</td>
+                            <td>visual</td>
+                        </tr>
+                        <tr>
+                            <td>1,014</td>
+                            <td>dashboard</td>
+                            <td>illustrative</td>
+                            <td>rich</td>
+                            <td>data</td>
+                        </tr>
+                        <tr>
+                            <td>1,015</td>
+                            <td>random</td>
+                            <td>tabular</td>
+                            <td>information</td>
+                            <td>text</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+
+    if (document.getElementById('message') != undefined) {
+        const toast = new bootstrap.Toast(document.getElementById('liveToast'))
+        toast.show()
+    }
+
+    document.getElementById('editButton').onclick = function () {
+
+
+
+        var name = document.getElementById('clientName');
+        var direction = document.getElementById('clientDirection');
+        var phonenumber = document.getElementById('clientPhonenumber');
+        name.readOnly = false;
+        direction.readOnly = false;
+        phonenumber.readOnly = false;
+
+        name.classList.remove("border-0");
+        direction.classList.remove("border-0");
+        phonenumber.classList.remove("border-0");
+
+        name.classList.add("border-2");
+        direction.classList.add("border-2");
+        phonenumber.classList.add("border-2");
+
+        document.getElementById("editButton").classList.add("d-none")
+        document.getElementById("validEdit").classList.remove("d-none")
+
+        document.getElementById("deleteButton").classList.add("d-none")
+        document.getElementById("cancelEdit").classList.remove("d-none")
+
+
+    };
+
+    document.getElementById("validEdit").onclick = function () {
+        var name = document.getElementById('clientName');
+        var direction = document.getElementById('clientDirection');
+        var phonenumber = document.getElementById('clientPhonenumber');
+        name.readOnly = true;
+        direction.readOnly = true;
+        phonenumber.readOnly = true;
+
+        name.classList.add("border-0");
+        direction.classList.add("border-0");
+        phonenumber.classList.add("border-0");
+
+        name.classList.remove("border-2");
+        direction.classList.remove("border-2");
+        phonenumber.classList.remove("border-2");
+
+        document.getElementById("editButton").classList.remove("d-none")
+        document.getElementById("validEdit").classList.add("d-none")
+
+        document.getElementById("deleteButton").classList.remove("d-none")
+        document.getElementById("cancelEdit").classList.add("d-none")
+
+        //Fix. Actualizar los datos en la base de datos
+    }
+
+    document.getElementById("cancelEdit").onclick = function () {
+        var name = document.getElementById('clientName');
+        var direction = document.getElementById('clientDirection');
+        var phonenumber = document.getElementById('clientPhonenumber');
+        name.readOnly = true;
+        direction.readOnly = true;
+        phonenumber.readOnly = true;
+
+        name.classList.add("border-0");
+        direction.classList.add("border-0");
+        phonenumber.classList.add("border-0");
+
+        name.classList.remove("border-2");
+        direction.classList.remove("border-2");
+        phonenumber.classList.remove("border-2");
+
+        document.getElementById("editButton").classList.remove("d-none");
+        document.getElementById("validEdit").classList.add("d-none");
+
+        document.getElementById("deleteButton").classList.remove("d-none");
+        document.getElementById("cancelEdit").classList.add("d-none");
+
+    }
+
+    document.getElementById("deleteButton").onclick = function () {
+        //Are you sure you want to delete the client?   
+    }
+
+    document.getElementById("validEdit").onclick = function () {
+        document.getElementById("updateForm").submit();
+    }
+
+</script>
+
+{% endblock %}
