@@ -1,15 +1,26 @@
 CREATE DATABASE clientmanager;
 use clientmanager;
 
-CREATE TABLE clients (
-  id int NOT NULL AUTO_INCREMENT,
+CREATE TABLE Client (
+  clientId int NOT NULL AUTO_INCREMENT,
   name VARCHAR(50),
   direction VARCHAR(50),
   phonenumber VARCHAR(10),
-  PRIMARY KEY (id)
+  PRIMARY KEY (clientId)
 );
 
-INSERT INTO clients
+CREATE TABLE Bill (
+  billId int NOT NULL AUTO_INCREMENT,
+  clientId int NOT NULL,
+  description VARCHAR(60),
+  price int,
+  date date,
+  FOREIGN KEY(clientId) REFERENCES Client(clientId),
+
+  PRIMARY KEY (billId)
+);
+
+INSERT INTO Client
   (name, direction, phonenumber)
 VALUES
   ( 'Damián Martínez Ávila', 'Calle Gonzalo de Berceo 1-3-1', '658632348'),

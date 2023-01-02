@@ -31,12 +31,23 @@ app.secret_key = 'secretkey'
 def start():
 
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM clients")
+    cursor.execute("SELECT * FROM Client")
     rows = cursor.fetchall()
     #resp = jsonify(rows)
     #resp.status_code = 200
     #print(resp.data)
     return render_template('index.html',clients=rows)
+
+@app.route('/bills')
+def bills():
+
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM Bill")
+    rows = cursor.fetchall()
+    #resp = jsonify(rows)
+    #resp.status_code = 200
+    #print(resp.data)
+    return render_template('bills.html',bills=rows)
 
 @app.route('/about')
 def about():
@@ -53,9 +64,9 @@ def about():
 def getClient(id):
 
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM clients")
+    cursor.execute("SELECT * FROM Client")
     rows = cursor.fetchall()
-    sql = "SELECT * FROM clients WHERE id = (%s)"
+    sql = "SELECT * FROM Client WHERE id = (%s)"
     val = [str(id)]
     cursor.execute( sql, val)
     client = cursor.fetchone()
@@ -72,7 +83,7 @@ def addClients():
         direccion = request.form['direccion']
         telefono = request.form['telefono']
         cur = connection.cursor()
-        sql = 'INSERT INTO clients (name, direction, phonenumber) VALUES (%s, %s, %s)'
+        sql = 'INSERT INTO Client (name, direction, phonenumber) VALUES (%s, %s, %s)'
         val = (nombre, direccion, telefono)
         cur.execute( sql, val)
         connection.commit()
@@ -88,7 +99,7 @@ def updateClients(id):
         direccion = request.form['directionForm']
         telefono = request.form['phonenumberForm']
         cur = connection.cursor()
-        sql = 'UPDATE clients SET name = %s, direction = %s, phonenumber = %s WHERE id = %s'
+        sql = 'UPDATE Client SET name = %s, direction = %s, phonenumber = %s WHERE id = %s'
         val = (nombre, direccion, telefono, str(id))
         cur.execute( sql, val)
         connection.commit()
@@ -101,7 +112,7 @@ def deleteClients(id):
     if request.method == 'POST':
 
         cur = connection.cursor()
-        sql = 'DELETE FROM clients WHERE id = (%s)'
+        sql = 'DELETE FROM Client WHERE id = (%s)'
         val = [str(id)]
         cur.execute( sql, val)
         connection.commit()

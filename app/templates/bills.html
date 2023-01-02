@@ -1,0 +1,212 @@
+{% extends 'layout.html' %}
+
+{% block body%}
+
+<div id="liveToast" class="toast" style="z-index: 100000; position: absolute; top: 3%; left: 3%;" role="alert"
+    aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <strong class="me-auto">Client Manager</strong>
+        <small class="text-muted">Just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages%}
+
+        <p id="message">{{message}}</p>
+
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+</div>
+
+<form class="d-flex mt-3 " role="search" style="width:40%; margin-left: 30%; margin-right: 30%;">
+
+    <input class="form-control rounded-0 rounded-start border-2 border-end-0 border-secondary" type="search"
+        placeholder="Search" aria-label="Search">
+    <select name="search_param" id="search_param"
+        class="btn btn-default dropdown-toggle border rounded-0 rounded-end  border-secondary" data-toggle="dropdown">
+        <option value="all">All</option>
+        <option value="username">Name</option>
+        <option value="email">Direction</option>
+        <option value="studentcode">Phone Number</option>
+    </select>
+
+</form>
+
+<div class="container mt-3" style="height: 800px;">
+    <div class=" d-inline-block rounded border-2 border-secondary  border "
+        style="width: 100%; height: 80%;">
+
+        <!-- Add Client -->
+        <div class="border-bottom border-2 border-secondary">
+            <button type="button" class="btn btn-primary w-50" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                style="margin-left: 25%; margin-right: 25%; margin-top:10px; margin-bottom:10px;">
+                Add Bill
+            </button>
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Add a new Bill</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/addClients" method="POST">
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput" class="form-label">Client</label>
+                                    <input type="text" name="nombre" class="form-control" id="formGroupExampleInput"
+                                        placeholder="Example input placeholder">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput2" class="form-label">Description</label>
+                                    <input type="text" name="direccion" class="form-control" id="formGroupExampleInput2"
+                                        placeholder="Another input placeholder">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="formGroupExampleInput3" class="form-label">Price</label>
+                                    <input type="text" name="telefono" class="form-control" id="formGroupExampleInput3"
+                                        placeholder="Another input placeholder">
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+
+
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="list-group overflow-auto scrollbar" style="height: 90.5%;">
+
+            <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                {% for bill in bills%}
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>{{bill.0}}</td>
+                        <td>{{bill.1}}</td>
+                        <td>{{bill.2}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    
+</div>
+
+<script>
+
+    if (document.getElementById('message') != undefined) {
+        const toast = new bootstrap.Toast(document.getElementById('liveToast'))
+        toast.show()
+    }
+
+    document.getElementById('editButton').onclick = function () {
+
+
+
+        var name = document.getElementById('clientName');
+        var direction = document.getElementById('clientDirection');
+        var phonenumber = document.getElementById('clientPhonenumber');
+        name.readOnly = false;
+        direction.readOnly = false;
+        phonenumber.readOnly = false;
+
+        name.classList.remove("border-0");
+        direction.classList.remove("border-0");
+        phonenumber.classList.remove("border-0");
+
+        name.classList.add("border-2");
+        direction.classList.add("border-2");
+        phonenumber.classList.add("border-2");
+
+        document.getElementById("editButton").classList.add("d-none")
+        document.getElementById("validEdit").classList.remove("d-none")
+
+        document.getElementById("deleteButton").classList.add("d-none")
+        document.getElementById("cancelEdit").classList.remove("d-none")
+
+
+    };
+
+    document.getElementById("validEdit").onclick = function () {
+        var name = document.getElementById('clientName');
+        var direction = document.getElementById('clientDirection');
+        var phonenumber = document.getElementById('clientPhonenumber');
+        name.readOnly = true;
+        direction.readOnly = true;
+        phonenumber.readOnly = true;
+
+        name.classList.add("border-0");
+        direction.classList.add("border-0");
+        phonenumber.classList.add("border-0");
+
+        name.classList.remove("border-2");
+        direction.classList.remove("border-2");
+        phonenumber.classList.remove("border-2");
+
+        document.getElementById("editButton").classList.remove("d-none")
+        document.getElementById("validEdit").classList.add("d-none")
+
+        document.getElementById("deleteButton").classList.remove("d-none")
+        document.getElementById("cancelEdit").classList.add("d-none")
+
+        //Fix. Actualizar los datos en la base de datos
+    }
+
+    document.getElementById("cancelEdit").onclick = function () {
+        var name = document.getElementById('clientName');
+        var direction = document.getElementById('clientDirection');
+        var phonenumber = document.getElementById('clientPhonenumber');
+        name.readOnly = true;
+        direction.readOnly = true;
+        phonenumber.readOnly = true;
+
+        name.classList.add("border-0");
+        direction.classList.add("border-0");
+        phonenumber.classList.add("border-0");
+
+        name.classList.remove("border-2");
+        direction.classList.remove("border-2");
+        phonenumber.classList.remove("border-2");
+
+        document.getElementById("editButton").classList.remove("d-none");
+        document.getElementById("validEdit").classList.add("d-none");
+
+        document.getElementById("deleteButton").classList.remove("d-none");
+        document.getElementById("cancelEdit").classList.add("d-none");
+
+    }
+
+    document.getElementById("deleteButton").onclick = function () {
+        //Are you sure you want to delete the client?   
+    }
+
+    document.getElementById("validEdit").onclick = function () {
+        document.getElementById("updateForm").submit();
+    }
+
+</script>
+
+{% endblock %}
