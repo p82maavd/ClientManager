@@ -91,20 +91,20 @@
             <table class="table table-bordered">
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
                     <th scope="col">Client</th>
                     <th scope="col">Description</th>
                     <th scope="col">Price</th>
+                    <th scope="col">Date</th>
                   </tr>
                 </thead>
                 <tbody>
 
                 {% for bill in bills%}
                     <tr>
-                        <th scope="row">1</th>
-                        <td>{{bill.0}}</td>
                         <td>{{bill.1}}</td>
                         <td>{{bill.2}}</td>
+                        <td>{{bill.3}}</td>
+                        <td>{{bill.4}}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

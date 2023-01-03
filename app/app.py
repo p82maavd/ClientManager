@@ -60,14 +60,14 @@ def about():
     #print(resp.data)
     return render_template('about.html')
 
-@app.route('/getClient/<id>', methods=["GET"])
-def getClient(id):
+@app.route('/getClient/<clientId>', methods=["GET"])
+def getClient(clientId):
 
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM Client")
     rows = cursor.fetchall()
-    sql = "SELECT * FROM Client WHERE id = (%s)"
-    val = [str(id)]
+    sql = "SELECT * FROM Client WHERE clientId = (%s)"
+    val = [str(clientId)]
     cursor.execute( sql, val)
     client = cursor.fetchone()
     #resp = jsonify(rows)

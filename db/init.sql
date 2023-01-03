@@ -33,3 +33,16 @@ VALUES
   ( 'Damián Martínez Ávila', 'Calle Gonzalo de Berceo 1-3-1', '658632348'),
   ( 'Damián Martínez Ávila', 'Calle Gonzalo de Berceo 1-3-1', '658632348'),
   ( 'Maria Martínez Ávila', 'Calle Gonzalo de Berceo 1-3-2', '653537243');
+
+INSERT INTO Bill
+  (clientId,description, price, date)
+VALUES
+  ( 1, 'Potato', 10, '2023-01-03'),
+  ( 2, 'Potato', 10, '2023-01-03'),
+  ( 1, 'Potato', 10, '2023-01-03'),
+  ( 2, 'Potato', 10, '2023-01-03'),
+  ( 1, 'Potato', 10, '2023-01-03'),
+  ( 2, 'Potato', 10, '2023-01-03'),
+  ( 1, 'Potato', 10, '2023-01-03'),
+  ( 2, 'Potato', 10, '2023-01-03'),
+  ( 3, 'Potato', 10, '2023-01-03');
